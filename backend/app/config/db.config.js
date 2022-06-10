@@ -1,8 +1,8 @@
 module.exports = {
     HOST: "localhost",
-    PORT: 3366,
+    PORT: 3307,
     USER: "root",
-    PASSWORD: "password",
+    PASSWORD: "root",
     DB: "extravios",
     dialect: "mysql",
     pool: {
