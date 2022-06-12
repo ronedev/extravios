@@ -18,6 +18,7 @@ fonts: {
   styles: {
     global: (props: ChakraProps) => ({
       "html, body": {
+        scrollBehavior: "smooth",
         height: "100%",
         maxHeight: "100vh",
         background: mode(
