@@ -33,10 +33,14 @@ exports.createPost = (req, res) => {
 
 //Get all Posts desde la base de datos
 exports.getAllPosts = (req, res) => {
+  const limit = 2
+  const page = req.params.page
+  const offset = limit * (page - 1)
+
   const title = req.query.title;
   let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
 
-  Post.findAll({ where: condition })
+  Post.findAll({ offset: offset, limit: limit,where: condition })
     .then((data) => {
       res.send(data);
     })

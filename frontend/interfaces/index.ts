@@ -6,3 +6,7 @@ export interface Posts{
     createdAt: string;
     updatedAt: string;
 }
+export interface Props {
+    data: Posts[];
+    error: string;
+  }
