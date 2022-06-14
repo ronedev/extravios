@@ -23,28 +23,24 @@ import { BiSearch } from "react-icons/bi";
 import { server } from "../config";
 import { Posts, Props } from "../interfaces";
 
-const Home = ({ data, error }: Props) => {
+const Home = ({ data, count, error }: Props) => {
   const [posts, setPosts] = useState(data);
   const [page, setPage] = useState(1);
-
-  const [noMorePosts, setNoMorePosts] = useState(false);
+  console.log('posts', posts);
 
   const route = useRouter();
 
   const loadMore = async () => {
     const res = await fetch(`${server}/api/posts/${page + 1}`);
-    const data = await res.json();
-    if (data.length > 0) {
-      setPage(page + 1);
-      setPosts((previusData) => [...previusData, ...data]);
-    } else {
-      setNoMorePosts(true);
-    }
+    const response = await res.json();
+    const data = response.rows
+    setPage(page + 1);
+    setPosts((previusData) => [...previusData, ...data]);
   };
 
   const goToUp = () => {
     window.scrollTo(0, 0);
-  }
+  };
 
   return (
     <Container p={10} centerContent>
@@ -96,7 +92,7 @@ const Home = ({ data, error }: Props) => {
             </Flex>
           </Box>
         ))}
-        {noMorePosts && (
+        {!(count > posts.length) && (
           <Center marginBottom={4}>
             <Text textAlign="center">No se encontraron mas resultados</Text>
           </Center>
@@ -106,7 +102,7 @@ const Home = ({ data, error }: Props) => {
             onClick={loadMore}
             width={["100%", "50%", "35%"]}
             fontWeight="light"
-            disabled={noMorePosts}
+            disabled={count <= posts.length}
           >
             Cargar más...
           </Button>
@@ -126,10 +122,12 @@ export async function getServerSideProps() {
   const page = 1;
   let error = "";
   let data: Posts[] = [];
+  let count = 0;
   await axios
     .get(`${server}/api/posts/${page}`)
     .then((res) => {
-      data.push(...res.data);
+      data.push(...res.data.rows);
+      count = res.data.count;
     })
     .catch((err) => {
       console.log(err);
@@ -139,6 +137,7 @@ export async function getServerSideProps() {
   return {
     props: {
       data,
+      count,
       error,
     },
   };

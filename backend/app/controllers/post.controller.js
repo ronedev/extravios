@@ -38,9 +38,9 @@ exports.getAllPosts = (req, res) => {
   const offset = limit * (page - 1)
 
   const title = req.query.title;
-  let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+  let condition = title ? { title: { [Op.like]: `%${title}%` }, published: true } : {published: true};
 
-  Post.findAll({ offset: offset, limit: limit,where: condition })
+  Post.findAndCountAll({ offset: offset, limit: limit,where: condition })
     .then((data) => {
       res.send(data);
     })

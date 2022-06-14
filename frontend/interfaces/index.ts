@@ -8,5 +8,6 @@ export interface Posts{
 }
 export interface Props {
     data: Posts[];
+    count: number;
     error: string;
   }
