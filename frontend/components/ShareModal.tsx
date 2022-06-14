@@ -30,13 +30,13 @@ const ShareModal = ({ isOpen, onClose }: IShareModal) => {
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody display={'flex'} justifyContent="center" gap={8}>
-          <IconButton aria-label="facebook-button" bg={"transparent"} padding={2}>
+          <IconButton aria-label="facebook-button" bg={"transparent"} padding={2} _hover={{color:"blue.600"}}>
             <FaFacebook size={35}/>
           </IconButton>
-          <IconButton aria-label="instagram-button" bg={"transparent"} padding={2}>
+          <IconButton aria-label="instagram-button" bg={"transparent"} padding={2} _hover={{color:"blue.600"}}>
             <BsInstagram size={35} />
           </IconButton>
-          <IconButton aria-label="twitter-button" bg={"transparent"} padding={2}>
+          <IconButton aria-label="twitter-button" bg={"transparent"} padding={2} _hover={{color:"blue.600"}}>
             <BsTwitter size={35} />
           </IconButton>
         </ModalBody>
