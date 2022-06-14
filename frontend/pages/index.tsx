@@ -12,6 +12,7 @@ import {
   Spacer,
   Spinner,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 
 import axios from "axios";
@@ -25,12 +26,15 @@ import { BiSearch } from "react-icons/bi";
 
 import { server } from "../config";
 import { Posts, Props } from "../interfaces";
+import ShareModal from "../components/ShareModal";
 
 const Home = ({ data, count, error }: Props) => {
   const [posts, setPosts] = useState(data);
   const [page, setPage] = useState(1);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [handleSearch, setHandleSearch] = useState("");
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const route = useRouter();
 
@@ -61,6 +65,7 @@ const Home = ({ data, count, error }: Props) => {
 
   return (
     <Container p={10} centerContent>
+      <ShareModal isOpen={isOpen} onClose={onClose} />
       <Box padding={4} width="100%" borderRadius={8}>
         <Flex alignItems="center" marginTop={4} marginBottom={2} color="white">
           <Heading
@@ -80,7 +85,6 @@ const Home = ({ data, count, error }: Props) => {
             <Input
               placeholder="Buscar por título"
               type="text"
-              
               onChange={(e) => setHandleSearch(e.target.value)}
             />
             <Input
@@ -105,7 +109,6 @@ const Home = ({ data, count, error }: Props) => {
                 borderRadius={8}
                 padding={8}
                 maxWidth={"md"}
-                onClick={() => route.push("/post/" + post.id)}
               >
                 <Heading
                   fontWeight={600}
@@ -114,6 +117,7 @@ const Home = ({ data, count, error }: Props) => {
                   color={"black"}
                   as="h2"
                   cursor={"pointer"}
+                  onClick={() => route.push("/post/" + post.id)}
                 >
                   {post.title}
                 </Heading>
@@ -130,7 +134,7 @@ const Home = ({ data, count, error }: Props) => {
                     <BsWhatsapp size={22} color={"black"} />
                   </IconButton>
                   <IconButton aria-label="Compartir en redes">
-                    <BsShare size={22} color={"black"} />
+                    <BsShare size={22} color={"black"} onClick={onOpen} />
                   </IconButton>
                   <Spacer />
                   <Text color={"blackAlpha.700"}>Hace 24 hs</Text>
@@ -164,7 +168,9 @@ const Home = ({ data, count, error }: Props) => {
             </Center>
           </>
         ) : (
-          <Text fontSize={20} textAlign="center" my={4}>No se encontraron resultados</Text>
+          <Text fontSize={20} textAlign="center" my={4}>
+            No se encontraron resultados
+          </Text>
         )}
       </Box>
     </Container>
