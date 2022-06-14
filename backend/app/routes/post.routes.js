@@ -7,7 +7,7 @@ module.exports = (app) => {
   router.post("/", posts.createPost);
 
   //Get todos los posts
-  router.get("/:page", posts.getAllPosts);
+  router.get("/", posts.getAllPosts);
 
   //Get todos los post published
   router.get("/published", posts.getAllPublishedPosts);

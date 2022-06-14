@@ -7,7 +7,10 @@ import {
   Heading,
   IconButton,
   Input,
+  InputGroup,
+  InputLeftElement,
   Spacer,
+  Spinner,
   Text,
 } from "@chakra-ui/react";
 
@@ -16,7 +19,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-import { BsWhatsapp } from "react-icons/bs";
+import { BsSearch, BsWhatsapp } from "react-icons/bs";
 import { BsShare } from "react-icons/bs";
 import { BiSearch } from "react-icons/bi";
 
@@ -26,16 +29,30 @@ import { Posts, Props } from "../interfaces";
 const Home = ({ data, count, error }: Props) => {
   const [posts, setPosts] = useState(data);
   const [page, setPage] = useState(1);
-  console.log('posts', posts);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [handleSearch, setHandleSearch] = useState("");
 
   const route = useRouter();
 
   const loadMore = async () => {
-    const res = await fetch(`${server}/api/posts/${page + 1}`);
+    setIsLoadingMore(true);
+    const res = await fetch(`${server}/api/posts?page=${page + 1}`);
     const response = await res.json();
-    const data = response.rows
+    const data = response.rows;
+    setIsLoadingMore(false);
     setPage(page + 1);
     setPosts((previusData) => [...previusData, ...data]);
+  };
+
+  const handleSubmitSearch = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const URL = `${server}/api/posts?title=${handleSearch}`;
+    await axios
+      .get(URL)
+      .then((res) => {
+        setPosts(res.data.rows);
+      })
+      .catch((err) => console.log(err));
   };
 
   const goToUp = () => {
@@ -55,63 +72,100 @@ const Home = ({ data, count, error }: Props) => {
             Extravios
           </Heading>
         </Flex>
-        <Input placeholder="Buscar por título" marginBottom={4} />
-        {posts.map((post: any) => (
-          <Box
-            key={post.id}
-            marginBottom={8}
-            backgroundColor={"gray.200"}
-            borderRadius={8}
-            padding={8}
-            maxWidth={"md"}
-            onClick={() => route.push("/post/" + post.id)}
-          >
-            <Heading
-              fontWeight={600}
-              fontSize={{ base: "l", sm: "xl", md: "2xl" }}
-              lineHeight={"150%"}
-              color={"black"}
-              as="h2"
-              cursor={"pointer"}
-            >
-              {post.title}
-            </Heading>
-            <Text color={"gray.500"} marginTop={2}>
-              {post.description}
-            </Text>
-            <Box marginTop={4}></Box>
-            <Flex minWidth={"max-content"} alignItems={"center"} marginTop={4}>
-              <IconButton aria-label="Comunicarse via Whatsapp">
-                <BsWhatsapp size={22} color={"black"} />
-              </IconButton>
-              <IconButton aria-label="Compartir en redes">
-                <BsShare size={22} color={"black"} />
-              </IconButton>
-              <Spacer />
-              <Text color={"blackAlpha.700"}>Hace 24 hs</Text>
-            </Flex>
-          </Box>
-        ))}
-        {!(count > posts.length) && (
-          <Center marginBottom={4}>
-            <Text textAlign="center">No se encontraron mas resultados</Text>
-          </Center>
+        <form onSubmit={handleSubmitSearch}>
+          <InputGroup marginBottom={4}>
+            <InputLeftElement>
+              <BsSearch size="20px" cursor="pointer" />
+            </InputLeftElement>
+            <Input
+              placeholder="Buscar por título"
+              type="text"
+              
+              onChange={(e) => setHandleSearch(e.target.value)}
+            />
+            <Input
+              type="submit"
+              value="Buscar"
+              p={2}
+              w={"50%"}
+              ml={2}
+              textAlign="center"
+              _hover={{ bg: "gray.100", color: "black" }}
+              cursor="pointer"
+            />
+          </InputGroup>
+        </form>
+        {posts.length > 0 ? (
+          <>
+            {posts.map((post: Posts) => (
+              <Box
+                key={post.id}
+                marginBottom={8}
+                backgroundColor={"gray.200"}
+                borderRadius={8}
+                padding={8}
+                maxWidth={"md"}
+                onClick={() => route.push("/post/" + post.id)}
+              >
+                <Heading
+                  fontWeight={600}
+                  fontSize={{ base: "l", sm: "xl", md: "2xl" }}
+                  lineHeight={"150%"}
+                  color={"black"}
+                  as="h2"
+                  cursor={"pointer"}
+                >
+                  {post.title}
+                </Heading>
+                <Text color={"gray.500"} marginTop={2}>
+                  {post.description}
+                </Text>
+                <Box marginTop={4}></Box>
+                <Flex
+                  minWidth={"max-content"}
+                  alignItems={"center"}
+                  marginTop={4}
+                >
+                  <IconButton aria-label="Comunicarse via Whatsapp">
+                    <BsWhatsapp size={22} color={"black"} />
+                  </IconButton>
+                  <IconButton aria-label="Compartir en redes">
+                    <BsShare size={22} color={"black"} />
+                  </IconButton>
+                  <Spacer />
+                  <Text color={"blackAlpha.700"}>Hace 24 hs</Text>
+                </Flex>
+              </Box>
+            ))}
+            {isLoadingMore && (
+              <Center marginBottom={4}>
+                <Spinner size={["md", "sm", "xl"]} />
+              </Center>
+            )}
+            {!(count > posts.length) && (
+              <Center marginBottom={4}>
+                <Text textAlign="center">No se encontraron mas resultados</Text>
+              </Center>
+            )}
+            <Center>
+              <Button
+                onClick={loadMore}
+                width={["100%", "50%", "35%"]}
+                fontWeight="light"
+                disabled={count <= posts.length}
+              >
+                Cargar más...
+              </Button>
+            </Center>
+            <Center mt={4}>
+              <Button width={["100%", "50%", "35%"]} onClick={goToUp}>
+                Volver arriba
+              </Button>
+            </Center>
+          </>
+        ) : (
+          <Text fontSize={20} textAlign="center" my={4}>No se encontraron resultados</Text>
         )}
-        <Center>
-          <Button
-            onClick={loadMore}
-            width={["100%", "50%", "35%"]}
-            fontWeight="light"
-            disabled={count <= posts.length}
-          >
-            Cargar más...
-          </Button>
-        </Center>
-        <Center mt={4}>
-          <Button width={["100%", "50%", "35%"]} onClick={goToUp}>
-            Volver arriba
-          </Button>
-        </Center>
       </Box>
     </Container>
   );
@@ -124,7 +178,7 @@ export async function getServerSideProps() {
   let data: Posts[] = [];
   let count = 0;
   await axios
-    .get(`${server}/api/posts/${page}`)
+    .get(`${server}/api/posts?page=${page}`)
     .then((res) => {
       data.push(...res.data.rows);
       count = res.data.count;
