@@ -17,6 +17,7 @@ exports.createPost = (req, res) => {
     title: req.body.title,
     description: req.body.description,
     published: req.body.published ? req.body.published : false,
+    phone: req.body.phone
   };
 
   //Guardar post en la base de datos
@@ -37,10 +38,8 @@ exports.getAllPosts = (req, res) => {
   const page = req.query.page ? req.query.page : 1
   const offset = limit * (page - 1)
 
-  console.log('page',req.query.page)
   
   const title = req.query.title;
-  console.log('title',title)
   let condition = title ? { title: { [Op.like]: `%${title}%` }, published: true } : {published: true};
 
   Post.findAndCountAll({ offset: offset, limit: limit,where: condition })

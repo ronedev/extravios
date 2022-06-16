@@ -5,6 +5,7 @@ export interface Posts{
     whatsapp: string;
     createdAt: string;
     updatedAt: string;
+    phone: string;
 }
 export interface Props {
     data: Posts[];

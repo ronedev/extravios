@@ -13,6 +13,9 @@ module.exports = (sequelize, Sequelize) => {
     published: {
       type: Sequelize.BOOLEAN,
     },
+    phone: {
+      type: Sequelize.STRING
+    }
   });
 
   return Post;

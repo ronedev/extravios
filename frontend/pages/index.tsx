@@ -17,12 +17,11 @@ import {
 
 import axios from "axios";
 
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
 import { useState } from "react";
 
 import { BsSearch, BsWhatsapp } from "react-icons/bs";
 import { BsShare } from "react-icons/bs";
-import { BiSearch } from "react-icons/bi";
 
 import { server } from "../config";
 import { Posts, Props } from "../interfaces";
@@ -62,6 +61,14 @@ const Home = ({ data, count, error }: Props) => {
   const goToUp = () => {
     window.scrollTo(0, 0);
   };
+
+  const whatshappContact = (post: Posts)=>{
+    const message = `¡Hola! Tengo información sobre tu ${post.title}`
+    const URL_TEXT = message.replaceAll(' ', '%20')
+    const URL = `https://wa.me/${post.phone}?text=${URL_TEXT}`
+
+    route.push(URL)
+  }
 
   return (
     <Container p={10} centerContent>
@@ -133,7 +140,7 @@ const Home = ({ data, count, error }: Props) => {
                     marginTop={4}
                   >
                     <IconButton aria-label="Comunicarse via Whatsapp">
-                      <BsWhatsapp size={22} color={"black"} />
+                      <BsWhatsapp size={22} color={"black"} onClick={()=> whatshappContact(post)}/>
                     </IconButton>
                     <IconButton aria-label="Compartir en redes">
                       <BsShare size={22} color={"black"} onClick={onOpen} />
