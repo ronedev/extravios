@@ -8,19 +8,26 @@ import {
   ModalBody,
   ModalCloseButton,
   Button,
-  IconButton,
 } from "@chakra-ui/react";
 
-import { FaFacebook } from "react-icons/fa";
-import { BsInstagram } from "react-icons/bs";
-import { BsTwitter } from "react-icons/bs";
+import {
+  FacebookShareButton,
+  FacebookIcon,
+  TwitterShareButton,
+  TwitterIcon,
+  WhatsappShareButton,
+  WhatsappIcon,
+} from 'next-share';
+
+import { Posts } from "../interfaces";
 
 interface IShareModal {
   isOpen: boolean;
   onClose: () => void;
+  post: Posts
 }
 
-const ShareModal = ({ isOpen, onClose }: IShareModal) => {
+const ShareModal = ({ isOpen, onClose, post}: IShareModal) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
@@ -30,15 +37,27 @@ const ShareModal = ({ isOpen, onClose }: IShareModal) => {
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody display={'flex'} justifyContent="center" gap={8}>
-          <IconButton aria-label="facebook-button" bg={"transparent"} padding={2} _hover={{color:"blue.600"}}>
-            <FaFacebook size={35}/>
-          </IconButton>
-          <IconButton aria-label="instagram-button" bg={"transparent"} padding={2} _hover={{color:"blue.600"}}>
-            <BsInstagram size={35} />
-          </IconButton>
-          <IconButton aria-label="twitter-button" bg={"transparent"} padding={2} _hover={{color:"blue.600"}}>
-            <BsTwitter size={35} />
-          </IconButton>
+          <FacebookShareButton
+            // url={`${client}/post/${post.id}`}
+            url="https://github.com/next-share"
+            title={`¡Hola! He extraviado mi ${post.title}, ante cualquier información por favor contactese conmigo.`}
+            hashtag={'#extravio'}
+          >
+            <FacebookIcon round size={40} />
+          </FacebookShareButton>
+          <WhatsappShareButton
+            // url={`${client}/post/${post.id}`}
+            url="https://github.com/next-share"
+            title={`¡Hola! He extraviado mi ${post.title}, ante cualquier información por favor contactese conmigo.`}
+          >
+            <WhatsappIcon size={40} round />
+          </WhatsappShareButton>
+          <TwitterShareButton
+            url="https://github.com/next-share"
+            title={`¡Hola! He extraviado mi ${post.title}, ante cualquier información por favor contactese conmigo.`}
+          >
+            <TwitterIcon size={40} round/>
+          </TwitterShareButton>
         </ModalBody>
         <ModalFooter display={'flex'} justifyContent="center">
           <Button colorScheme="blue" mr={3} onClick={onClose}>

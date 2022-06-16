@@ -65,7 +65,6 @@ const Home = ({ data, count, error }: Props) => {
 
   return (
     <Container p={10} centerContent>
-      <ShareModal isOpen={isOpen} onClose={onClose} />
       <Box padding={4} width="100%" borderRadius={8}>
         <Flex alignItems="center" marginTop={4} marginBottom={2} color="white">
           <Heading
@@ -102,44 +101,48 @@ const Home = ({ data, count, error }: Props) => {
         {posts.length > 0 ? (
           <>
             {posts.map((post: Posts) => (
-              <Box
-                key={post.id}
-                marginBottom={8}
-                backgroundColor={"gray.200"}
-                borderRadius={8}
-                padding={8}
-                maxWidth={"md"}
-              >
-                <Heading
-                  fontWeight={600}
-                  fontSize={{ base: "l", sm: "xl", md: "2xl" }}
-                  lineHeight={"150%"}
-                  color={"black"}
-                  as="h2"
-                  cursor={"pointer"}
-                  onClick={() => route.push("/post/" + post.id)}
+              <>
+                <ShareModal post={post} isOpen={isOpen} onClose={onClose} />
+
+                <Box
+                  key={post.id}
+                  marginBottom={8}
+                  backgroundColor={"gray.200"}
+                  borderRadius={8}
+                  padding={8}
+                  maxWidth={"md"}
                 >
-                  {post.title}
-                </Heading>
-                <Text color={"gray.500"} marginTop={2}>
-                  {post.description}
-                </Text>
-                <Box marginTop={4}></Box>
-                <Flex
-                  minWidth={"max-content"}
-                  alignItems={"center"}
-                  marginTop={4}
-                >
-                  <IconButton aria-label="Comunicarse via Whatsapp">
-                    <BsWhatsapp size={22} color={"black"} />
-                  </IconButton>
-                  <IconButton aria-label="Compartir en redes">
-                    <BsShare size={22} color={"black"} onClick={onOpen} />
-                  </IconButton>
-                  <Spacer />
-                  <Text color={"blackAlpha.700"}>Hace 24 hs</Text>
-                </Flex>
-              </Box>
+                  <Heading
+                    fontWeight={600}
+                    fontSize={{ base: "l", sm: "xl", md: "2xl" }}
+                    lineHeight={"150%"}
+                    color={"black"}
+                    as="h2"
+                    cursor={"pointer"}
+                    onClick={() => route.push("/post/" + post.id)}
+                  >
+                    {post.title}
+                  </Heading>
+                  <Text color={"gray.500"} marginTop={2}>
+                    {post.description}
+                  </Text>
+                  <Box marginTop={4}></Box>
+                  <Flex
+                    minWidth={"max-content"}
+                    alignItems={"center"}
+                    marginTop={4}
+                  >
+                    <IconButton aria-label="Comunicarse via Whatsapp">
+                      <BsWhatsapp size={22} color={"black"} />
+                    </IconButton>
+                    <IconButton aria-label="Compartir en redes">
+                      <BsShare size={22} color={"black"} onClick={onOpen} />
+                    </IconButton>
+                    <Spacer />
+                    <Text color={"blackAlpha.700"}>Hace 24 hs</Text>
+                  </Flex>
+                </Box>
+              </>
             ))}
             {isLoadingMore && (
               <Center marginBottom={4}>
