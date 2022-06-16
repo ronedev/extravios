@@ -24,8 +24,9 @@ import { BsSearch, BsWhatsapp } from "react-icons/bs";
 import { BsShare } from "react-icons/bs";
 
 import { server } from "../config";
-import { Posts, Props } from "../interfaces";
+import { Posts, Props, RelativeTimeFormatUnit, Time } from "../interfaces";
 import ShareModal from "../components/ShareModal";
+import { getTimeAgo } from "../utils/common";
 
 const Home = ({ data, count, error }: Props) => {
   const [posts, setPosts] = useState(data);
@@ -146,7 +147,7 @@ const Home = ({ data, count, error }: Props) => {
                       <BsShare size={22} color={"black"} onClick={onOpen} />
                     </IconButton>
                     <Spacer />
-                    <Text color={"blackAlpha.700"}>Hace 24 hs</Text>
+                    <Text color={"blackAlpha.700"}>{getTimeAgo(Date.parse(post.createdAt))}</Text>
                   </Flex>
                 </Box>
               </>
