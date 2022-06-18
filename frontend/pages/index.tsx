@@ -27,16 +27,13 @@ import { server } from "../config";
 import { Posts, Props, RelativeTimeFormatUnit, Time } from "../interfaces";
 import ShareModal from "../components/ShareModal";
 import { getTimeAgo } from "../utils/common";
+import Post from "../components/Post";
 
-const Home = ({ data, count, error }: Props) => {
+const Home = ({ data, count }: Props) => {
   const [posts, setPosts] = useState(data);
   const [page, setPage] = useState(1);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [handleSearch, setHandleSearch] = useState("");
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const route = useRouter();
 
   const loadMore = async () => {
     setIsLoadingMore(true);
@@ -62,14 +59,6 @@ const Home = ({ data, count, error }: Props) => {
   const goToUp = () => {
     window.scrollTo(0, 0);
   };
-
-  const whatshappContact = (post: Posts)=>{
-    const message = `¡Hola! Tengo información sobre tu ${post.title}`
-    const URL_TEXT = message.replaceAll(' ', '%20')
-    const URL = `https://wa.me/${post.phone}?text=${URL_TEXT}`
-
-    route.push(URL)
-  }
 
   return (
     <Container p={10} centerContent>
@@ -110,47 +99,8 @@ const Home = ({ data, count, error }: Props) => {
           <>
             {posts.map((post: Posts) => (
               <>
-                <ShareModal post={post} isOpen={isOpen} onClose={onClose} />
-
-                <Box
-                  key={post.id}
-                  marginBottom={8}
-                  backgroundColor={"gray.200"}
-                  borderRadius={8}
-                  padding={8}
-                  maxWidth={"md"}
-                >
-                  <Heading
-                    fontWeight={600}
-                    fontSize={{ base: "l", sm: "xl", md: "2xl" }}
-                    lineHeight={"150%"}
-                    color={"black"}
-                    as="h2"
-                    cursor={"pointer"}
-                    onClick={() => route.push("/post/" + post.id)}
-                  >
-                    {post.title}
-                  </Heading>
-                  <Text color={"gray.500"} marginTop={2}>
-                    {post.description}
-                  </Text>
-                  <Box marginTop={4}></Box>
-                  <Flex
-                    minWidth={"max-content"}
-                    alignItems={"center"}
-                    marginTop={4}
-                  >
-                    <IconButton aria-label="Comunicarse via Whatsapp">
-                      <BsWhatsapp size={22} color={"black"} onClick={()=> whatshappContact(post)}/>
-                    </IconButton>
-                    <IconButton aria-label="Compartir en redes">
-                      <BsShare size={22} color={"black"} onClick={onOpen} />
-                    </IconButton>
-                    <Spacer />
-                    <Text color={"blackAlpha.700"}>{getTimeAgo(Date.parse(post.createdAt))}</Text>
-                  </Flex>
-                </Box>
-              </>
+                <Post post={post} />
+              </>              
             ))}
             {isLoadingMore && (
               <Center marginBottom={4}>
