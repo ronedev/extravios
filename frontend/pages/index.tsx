@@ -28,6 +28,7 @@ import { Posts, Props, RelativeTimeFormatUnit, Time } from "../interfaces";
 import ShareModal from "../components/ShareModal";
 import { getTimeAgo } from "../utils/common";
 import Post from "../components/Post";
+import HomeHeader from "../components/HomeHeader";
 
 const Home = ({ data, count }: Props) => {
   const [posts, setPosts] = useState(data);
@@ -63,16 +64,7 @@ const Home = ({ data, count }: Props) => {
   return (
     <Container p={10} centerContent>
       <Box padding={4} width="100%" borderRadius={8}>
-        <Flex alignItems="center" marginTop={4} marginBottom={2} color="white">
-          <Heading
-            fontWeight={600}
-            fontSize={{ base: "xl", sm: "2xl", md: "4xl" }}
-            lineHeight={"180%"}
-            as="h2"
-          >
-            Extravios
-          </Heading>
-        </Flex>
+        <HomeHeader />
         <form onSubmit={handleSubmitSearch}>
           <InputGroup marginBottom={4}>
             <InputLeftElement>
