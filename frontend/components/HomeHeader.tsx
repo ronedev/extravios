@@ -5,7 +5,7 @@ type Props = {};
 
 const HomeHeader = (props: Props) => {
   return (
-    <Flex alignItems="center" marginTop={4} marginBottom={2} color="white">
+    <Flex alignItems="center" marginTop={4} marginBottom={2} color="white" as={'header'}>
       <Heading
         fontWeight={600}
         fontSize={{ base: "xl", sm: "2xl", md: "4xl" }}

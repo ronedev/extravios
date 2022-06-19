@@ -1,40 +1,31 @@
 import {
   Box,
-  Button,
-  Center,
   Container,
-  Flex,
-  Heading,
-  IconButton,
   Input,
   InputGroup,
   InputLeftElement,
-  Spacer,
-  Spinner,
   Text,
-  useDisclosure,
 } from "@chakra-ui/react";
 
 import axios from "axios";
 
-import Router, { useRouter } from "next/router";
 import { useState } from "react";
 
 import { BsSearch, BsWhatsapp } from "react-icons/bs";
-import { BsShare } from "react-icons/bs";
 
 import { server } from "../config";
-import { Posts, Props, RelativeTimeFormatUnit, Time } from "../interfaces";
-import ShareModal from "../components/ShareModal";
-import { getTimeAgo } from "../utils/common";
+import { Posts, Props } from "../interfaces";
 import Post from "../components/Post";
 import HomeHeader from "../components/HomeHeader";
+import FooterHeader from "../components/FooterHeader";
 
 const Home = ({ data, count }: Props) => {
   const [posts, setPosts] = useState(data);
   const [page, setPage] = useState(1);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [handleSearch, setHandleSearch] = useState("");
+
+  const showMoreButton = count <= posts.length;
 
   const loadMore = async () => {
     setIsLoadingMore(true);
@@ -55,10 +46,6 @@ const Home = ({ data, count }: Props) => {
         setPosts(res.data.rows);
       })
       .catch((err) => console.log(err));
-  };
-
-  const goToUp = () => {
-    window.scrollTo(0, 0);
   };
 
   return (
@@ -94,31 +81,7 @@ const Home = ({ data, count }: Props) => {
                 <Post post={post} />
               </>              
             ))}
-            {isLoadingMore && (
-              <Center marginBottom={4}>
-                <Spinner size={["md", "sm", "xl"]} />
-              </Center>
-            )}
-            {!(count > posts.length) && (
-              <Center marginBottom={4}>
-                <Text textAlign="center">No se encontraron mas resultados</Text>
-              </Center>
-            )}
-            <Center>
-              <Button
-                onClick={loadMore}
-                width={["100%", "50%", "35%"]}
-                fontWeight="light"
-                disabled={count <= posts.length}
-              >
-                Cargar más...
-              </Button>
-            </Center>
-            <Center mt={4}>
-              <Button width={["100%", "50%", "35%"]} onClick={goToUp}>
-                Volver arriba
-              </Button>
-            </Center>
+            <FooterHeader loadMore={loadMore} showMoreButton={showMoreButton} isLoadingMore={isLoadingMore} />
           </>
         ) : (
           <Text fontSize={20} textAlign="center" my={4}>
