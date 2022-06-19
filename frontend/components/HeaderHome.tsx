@@ -3,7 +3,7 @@ import React from "react";
 
 type Props = {};
 
-const HomeHeader = (props: Props) => {
+const HeaderHome = (props: Props) => {
   return (
     <Flex alignItems="center" marginTop={4} marginBottom={2} color="white" as={'header'}>
       <Heading
@@ -18,4 +18,4 @@ const HomeHeader = (props: Props) => {
   );
 };
 
-export default HomeHeader;
+export default HeaderHome;

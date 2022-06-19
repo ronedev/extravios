@@ -16,8 +16,8 @@ import { BsSearch, BsWhatsapp } from "react-icons/bs";
 import { server } from "../config";
 import { Posts, Props } from "../interfaces";
 import Post from "../components/Post";
-import HomeHeader from "../components/HomeHeader";
-import FooterHeader from "../components/FooterHeader";
+import HeaderHome from "../components/HeaderHome";
+import FooterHome from "../components/FooterHome";
 
 const Home = ({ data, count }: Props) => {
   const [posts, setPosts] = useState(data);
@@ -51,7 +51,7 @@ const Home = ({ data, count }: Props) => {
   return (
     <Container p={10} centerContent>
       <Box padding={4} width="100%" borderRadius={8}>
-        <HomeHeader />
+        <HeaderHome />
         <form onSubmit={handleSubmitSearch}>
           <InputGroup marginBottom={4}>
             <InputLeftElement>
@@ -81,7 +81,7 @@ const Home = ({ data, count }: Props) => {
                 <Post post={post} />
               </>              
             ))}
-            <FooterHeader loadMore={loadMore} showMoreButton={showMoreButton} isLoadingMore={isLoadingMore} />
+            <FooterHome loadMore={loadMore} showMoreButton={showMoreButton} isLoadingMore={isLoadingMore} />
           </>
         ) : (
           <Text fontSize={20} textAlign="center" my={4}>

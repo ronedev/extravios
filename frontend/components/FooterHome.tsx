@@ -8,7 +8,7 @@ interface FProps{
     isLoadingMore: boolean
 }
 
-const FooterHeader = ({loadMore, showMoreButton, isLoadingMore}: FProps) => {
+const FooterHome = ({loadMore, showMoreButton, isLoadingMore}: FProps) => {
     const goToUp = () => {
         window.scrollTo(0, 0);
       };
@@ -43,4 +43,4 @@ const FooterHeader = ({loadMore, showMoreButton, isLoadingMore}: FProps) => {
   )
 }
 
-export default FooterHeader
+export default FooterHome
