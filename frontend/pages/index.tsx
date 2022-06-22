@@ -14,12 +14,15 @@ import { useState } from "react";
 
 import { BsSearch } from "react-icons/bs";
 import { FiRefreshCcw } from "react-icons/fi";
+import { IoAddCircleOutline } from "react-icons/io5";
 
 import { server } from "../config";
 import { Posts, Props } from "../interfaces";
 import Post from "../components/Post";
 import HeaderHome from "../components/HeaderHome";
 import FooterHome from "../components/FooterHome";
+import { useUser } from "@auth0/nextjs-auth0";
+import { useRouter } from "next/router";
 
 const Home = ({ data, countData }: Props) => {
   const [posts, setPosts] = useState(data);
@@ -30,6 +33,10 @@ const Home = ({ data, countData }: Props) => {
   const [isSearching, setIsSearching] = useState<boolean>(false);
 
   const showMoreButton = count <= posts.length;
+
+  const route = useRouter()
+  
+  const { user } = useUser();  
 
   const loadMore = async () => {
     setIsLoadingMore(true);
@@ -87,9 +94,13 @@ const Home = ({ data, countData }: Props) => {
               _hover={{ bg: "gray.100", color: "black" }}
               cursor="pointer"
             />
-            {isSearching && (
+            {isSearching ? (
               <Center ml={2}>
                 <FiRefreshCcw size="20px" cursor="pointer" onClick={reload}/>
+              </Center>
+            ): user && (
+              <Center ml={2}>
+                <IoAddCircleOutline size="30px" cursor="pointer" onClick={()=> route.push('/post/new')}/>
               </Center>
             )}
           </InputGroup>

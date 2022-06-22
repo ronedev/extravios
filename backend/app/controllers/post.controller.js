@@ -16,8 +16,9 @@ exports.createPost = (req, res) => {
   const post = {
     title: req.body.title,
     description: req.body.description,
-    published: req.body.published ? req.body.published : false,
-    phone: req.body.phone
+    published: req.body.published ? req.body.published : true,
+    city: req.body.city,
+    phone: req.body.phone,
   };
 
   //Guardar post en la base de datos
@@ -34,15 +35,21 @@ exports.createPost = (req, res) => {
 
 //Get all Posts desde la base de datos
 exports.getAllPosts = (req, res) => {
-  const limit = 2
-  const page = req.query.page ? req.query.page : 1
-  const offset = limit * (page - 1)
+  const limit = 2;
+  const page = req.query.page ? req.query.page : 1;
+  const offset = limit * (page - 1);
 
-  
   const title = req.query.title;
-  let condition = title ? { title: { [Op.like]: `%${title}%` }, published: true } : {published: true};
+  let condition = title
+    ? { title: { [Op.like]: `%${title}%` }, published: true }
+    : { published: true };
 
-  Post.findAndCountAll({ offset: offset, limit: limit,where: condition })
+  Post.findAndCountAll({
+    offset: offset,
+    limit: limit,
+    where: condition,
+    order: [["id", "DESC"]],
+  })
     .then((data) => {
       res.send(data);
     })
@@ -119,18 +126,18 @@ exports.deletePost = (req, res) => {
 };
 
 // Get all published Post
-exports.getAllPublishedPosts = (req, res) =>{
-    Post.findAll({where: {published:  true}})
-        .then(data =>{
-            res.send(data)
-        })
-        .catch(err=>{
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving tutorials"
-            })
-        })
-}
+exports.getAllPublishedPosts = (req, res) => {
+  Post.findAll({ where: { published: true } })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving tutorials",
+      });
+    });
+};
 //En este proyecto no se aplicara la opcion de eliminar TODOS los posts
 // Sin embargo seria asi:
 // exports.deleteAllPosts = (req, res) => {

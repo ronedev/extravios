@@ -23,8 +23,6 @@ const HeaderHome = (props: Props) => {
   if (isLoading) return <div>Cargando usuario...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
-  const userName = user?.name?.split(" ")[0];
-
   return (
     <Flex
       alignItems="center"
@@ -48,8 +46,8 @@ const HeaderHome = (props: Props) => {
           <Menu>
             <MenuButton as={"button"}>
               <AvatarGroup spacing={"1rem"}>
-                <Avatar src={user.picture ? user.picture : undefined} bg={"transparent"} alt={userName} as={'img'} />
-                <Text fontSize={"xl"}>{userName}</Text>
+                <Avatar src={user.picture ? user.picture : undefined} bg={"transparent"} />
+                <Text fontSize={"xl"}>{user?.given_name as React.ReactNode}</Text>
               </AvatarGroup>
             </MenuButton>
             <MenuList>
