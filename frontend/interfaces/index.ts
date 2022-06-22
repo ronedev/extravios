@@ -9,8 +9,7 @@ export interface Posts{
 }
 export interface Props {
     data: Posts[];
-    count: number;
-    error: string;
+    countData: number;
 }
 
 export interface Time{

@@ -1,5 +1,6 @@
 import {
   Box,
+  Center,
   Container,
   Input,
   InputGroup,
@@ -11,7 +12,8 @@ import axios from "axios";
 
 import { useState } from "react";
 
-import { BsSearch, BsWhatsapp } from "react-icons/bs";
+import { BsSearch } from "react-icons/bs";
+import { FiRefreshCcw } from "react-icons/fi";
 
 import { server } from "../config";
 import { Posts, Props } from "../interfaces";
@@ -19,41 +21,54 @@ import Post from "../components/Post";
 import HeaderHome from "../components/HeaderHome";
 import FooterHome from "../components/FooterHome";
 
-const Home = ({ data, count }: Props) => {
+const Home = ({ data, countData }: Props) => {
   const [posts, setPosts] = useState(data);
-  const [page, setPage] = useState(1);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [handleSearch, setHandleSearch] = useState("");
+  const [count, setCount] = useState<number>(countData);
+  const [page, setPage] = useState<number>(1);
+  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+  const [handleSearch, setHandleSearch] = useState<string>("");
+  const [isSearching, setIsSearching] = useState<boolean>(false);
 
   const showMoreButton = count <= posts.length;
 
   const loadMore = async () => {
     setIsLoadingMore(true);
-    const res = await fetch(`${server}/api/posts?page=${page + 1}`);
-    const response = await res.json();
-    const data = response.rows;
+    const URL = `${server}/api/posts?page=${page + 1}`;
+    await axios
+      .get(URL)
+      .then((res) => {
+        setPosts((previusData) => [...previusData, ...res.data.rows]);
+        setPage(page + 1);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
     setIsLoadingMore(false);
-    setPage(page + 1);
-    setPosts((previusData) => [...previusData, ...data]);
   };
 
   const handleSubmitSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsSearching(true);
     const URL = `${server}/api/posts?title=${handleSearch}`;
     await axios
       .get(URL)
       .then((res) => {
+        setCount(res.data.count);
         setPosts(res.data.rows);
       })
       .catch((err) => console.log(err));
   };
+
+  const reload = ()=>{
+    window.location.reload()
+  }
 
   return (
     <Container p={10} centerContent>
       <Box padding={4} width="100%" borderRadius={8}>
         <HeaderHome />
         <form onSubmit={handleSubmitSearch}>
-          <InputGroup marginBottom={4}>
+          <InputGroup marginBottom={4} display="flex" alignItems="center" justifyContent="space-evenly">
             <InputLeftElement>
               <BsSearch size="20px" cursor="pointer" />
             </InputLeftElement>
@@ -72,6 +87,11 @@ const Home = ({ data, count }: Props) => {
               _hover={{ bg: "gray.100", color: "black" }}
               cursor="pointer"
             />
+            {isSearching && (
+              <Center ml={2}>
+                <FiRefreshCcw size="20px" cursor="pointer" onClick={reload}/>
+              </Center>
+            )}
           </InputGroup>
         </form>
         {posts.length > 0 ? (
@@ -79,13 +99,17 @@ const Home = ({ data, count }: Props) => {
             {posts.map((post: Posts) => (
               <>
                 <Post post={post} />
-              </>              
+              </>
             ))}
-            <FooterHome loadMore={loadMore} showMoreButton={showMoreButton} isLoadingMore={isLoadingMore} />
+            <FooterHome
+              loadMore={loadMore}
+              showMoreButton={showMoreButton}
+              isLoadingMore={isLoadingMore}
+            />
           </>
         ) : (
           <Text fontSize={20} textAlign="center" my={4}>
-            No se encontraron resultados
+            No se encontraron resultados coincidentes
           </Text>
         )}
       </Box>
@@ -96,25 +120,23 @@ const Home = ({ data, count }: Props) => {
 export async function getServerSideProps() {
   //fetch data from api
   const page = 1;
-  let error = "";
   let data: Posts[] = [];
-  let count = 0;
+  let countData = 0;
   await axios
     .get(`${server}/api/posts?page=${page}`)
     .then((res) => {
       data.push(...res.data.rows);
-      count = res.data.count;
+      countData = res.data.count;
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
     });
 
   //pass data to the page via props
   return {
     props: {
       data,
-      count,
-      error,
+      countData,
     },
   };
 }

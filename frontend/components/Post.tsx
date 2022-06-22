@@ -42,7 +42,7 @@ const Post = ({post}:PProps) => {
         backgroundColor={"gray.200"}
         borderRadius={8}
         padding={8}
-        maxWidth={"md"}
+        w={"100%"}
       >
         <Heading
           fontWeight={600}
